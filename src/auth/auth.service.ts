@@ -32,6 +32,7 @@ export class AuthService {
   }
 
   async register(createUserDto: CreateUserDto): Promise<any> {
+    const email = createUserDto.email.toLowerCase();
     const existingUser = await this.usersService.findByEmail(createUserDto.email);
     if (existingUser) {
       throw new ConflictException('Email already in use');
@@ -39,7 +40,7 @@ export class AuthService {
 
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
     const newUser = await this.usersService.create({
-      email: createUserDto.email,
+      email,
       password: hashedPassword,
       name: createUserDto.name,
     });

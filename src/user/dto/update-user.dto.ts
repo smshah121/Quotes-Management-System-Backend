@@ -2,15 +2,15 @@ import { IsString, IsEmail, MinLength, MaxLength, IsOptional} from 'class-valida
 export class UpdateUserDto {
     @IsOptional()
      @IsString()
-      name: string;
+      name?: string;
 
       @IsOptional()
       @IsEmail()
-      email: string;
+      email?: string;
       
       @IsOptional()
       @IsString()
       @MinLength(6)
       @MaxLength(20)
-      password: string; 
+      password?: string; 
 }

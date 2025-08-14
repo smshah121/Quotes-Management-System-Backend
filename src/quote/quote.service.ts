@@ -56,8 +56,14 @@ export class QuotesService {
     }
 
     // Update fields, but keep the original user association
-    existingQuote.quote = updateQuoteDto.quote ?? existingQuote.quote;
-    existingQuote.author = updateQuoteDto.author ?? existingQuote.author;
+    if (updateQuoteDto.quote !== null && updateQuoteDto.quote !== undefined) {
+  existingQuote.quote = updateQuoteDto.quote;
+}
+
+if (updateQuoteDto.author !== null && updateQuoteDto.author !== undefined) {
+  existingQuote.author = updateQuoteDto.author;
+}
+
 
     return this.quoteRepository.save(existingQuote);
   }

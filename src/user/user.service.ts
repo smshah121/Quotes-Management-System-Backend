@@ -17,9 +17,11 @@ export class UsersService {
 
 
   async create(createUserDto: CreateUserDto): Promise<User> {
+    const normalizedEmail = createUserDto.email.toLowerCase().trim();
     const hashedPasword = await bcrypt.hash(createUserDto.password, 10);
     const users = this.userRepository.create({
       ...createUserDto,
+      email: normalizedEmail,
     password: hashedPasword
     })
     return this.userRepository.save(users)
@@ -33,19 +35,20 @@ export class UsersService {
     return this.userRepository.findOneBy({id});
   }
 
-  async update(id:number, updateuserdto:UpdateUserDto):Promise<User|null>{
-    const user= await this.userRepository.findOneBy({id});
-    if(!user)return null;
-    const updateUserData:Partial<User> = {... updateuserdto};
-    if(updateuserdto.password){
-      updateUserData.password=await bcrypt.hash(updateuserdto.password,10);
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    const user = await this.userRepository.findOneBy({id})
+    if(!user) return null
+    if(updateUserDto.password){
+      updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10)
     }
     else{
-    delete updateUserData.password};
-      
-      const updateuser=  this.userRepository.merge(user,updateUserData);
-      return this.userRepository.save(updateuser);
+      delete updateUserDto.password
     }
+
+    const updatedUser = await this.userRepository.merge(user, updateUserDto)
+    return this.userRepository.save(updatedUser)
+
+  }
     
 
   async remove(id:number):Promise<User|null>{
