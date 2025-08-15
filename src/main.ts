@@ -11,22 +11,25 @@ if (!globalThis.crypto) {
   } as any;
 }
 
-
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const configService = app.get(ConfigService); // <--- ADD THIS LINE
-  const jwtSecret = configService.get<string>('JWT_SECRET'); // <--- ADD THIS LINE
-  console.log('DEBUG: JWT_SECRET from ConfigService:', jwtSecret); // 
-  
-  app.useGlobalPipes(new ValidationPipe())
+  const configService = app.get(ConfigService);
+
+  const jwtSecret = configService.get<string>('JWT_SECRET');
+  console.log('DEBUG: JWT_SECRET from ConfigService:', jwtSecret);
+
+  app.useGlobalPipes(new ValidationPipe());
+
+  // Enable CORS for frontend
   app.enableCors({
-  origin: [
-    'https://quotes-frontend-tszy.vercel.app'
-  ],
-  credentials: false,
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-});
-  await app.listen(process.env.PORT ?? 3000);
+    origin: 'https://quotes-frontend-tszy.vercel.app', // frontend URL
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true, // if sending JWT in headers
+  });
+
+  const port = process.env.PORT ?? 3000;
+  await app.listen(port);
+  console.log(`Backend running on port ${port}`);
 }
 bootstrap();
