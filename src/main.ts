@@ -21,8 +21,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe())
   app.enableCors({
   origin: [
-    'https://quotes-frontend-tszy.vercel.app',
-    'http://localhost:3000'
+    'https://quotes-frontend-tszy.vercel.app'
   ],
   credentials: false,
   allowedHeaders: ['Content-Type', 'Authorization'],
