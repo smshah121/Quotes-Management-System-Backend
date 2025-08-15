@@ -20,8 +20,14 @@ async function bootstrap() {
   
   app.useGlobalPipes(new ValidationPipe())
   app.enableCors({
-    origin: "*"
-  })
+  origin: [
+    'https://quotes-frontend-tszy.vercel.app',
+    'http://localhost:3000'
+  ],
+  credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+});
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

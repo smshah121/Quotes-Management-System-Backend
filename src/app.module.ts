@@ -30,6 +30,12 @@ import { User } from './user/entities/user.entity';
         database: configService.get<string>('DB_NAME'),
         synchronize: false,
         entities: [Quote, User],
+        ssl: true,
+        extra: {
+          ssl: {
+            rejectUnauthorized: false,
+          },
+        },
       }),
     }),
 
