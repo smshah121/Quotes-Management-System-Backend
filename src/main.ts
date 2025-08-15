@@ -24,7 +24,7 @@ async function bootstrap() {
     'https://quotes-frontend-tszy.vercel.app',
     'http://localhost:3000'
   ],
-  credentials: true,
+  credentials: false,
   allowedHeaders: ['Content-Type', 'Authorization'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 });
