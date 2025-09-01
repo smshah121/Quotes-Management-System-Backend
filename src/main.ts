@@ -19,11 +19,14 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
 
   app.enableCors({
-    origin: ['https://peaceful-crisp-c5d1fb.netlify.app/'],
+    origin: [
+      'https://peaceful-crisp-c5d1fb.netlify.app',
+      'http://localhost:3000',
+    ], // frontend domains
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true, // if you use cookies/auth headers
   });
-
   const port = process.env.PORT || 3000;
   await app.listen(port, '0.0.0.0');
   console.log(`Backend running on port ${port}`);
