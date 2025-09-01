@@ -7,29 +7,23 @@ import { CreateUserDto } from 'src/user/dto/create-user.dto';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  // Login
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async Login(@Request() req: any) {
-    console.log('AuthController - req.user:', req.user);
+  async login(@Request() req: any) {
     const result = await this.authService.login(req.user);
-    console.log('AuthController - authService.login result:', result);
     return result;
   }
 
+  // Register
   @Post('register')
   async register(@Body() createUserDto: CreateUserDto) {
     try {
-      console.log('AuthController - register DTO:', createUserDto);
       const user = await this.authService.register(createUserDto);
-      console.log('AuthController - registered user:', user);
       return user;
     } catch (error) {
-      console.error('AuthController - register error:', error);
-
-      // Throw a more informative error
-      throw new InternalServerErrorException(
-        error.message || 'Registration failed',
-      );
+      console.error('Registration error:', error);
+      throw new InternalServerErrorException(error.message || 'Registration failed');
     }
   }
 }
