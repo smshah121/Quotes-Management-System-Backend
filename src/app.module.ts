@@ -12,34 +12,27 @@ import { User } from './user/entities/user.entity';
 
 @Module({
   imports: [
-    // Load .env file and make env variables globally available
     ConfigModule.forRoot({
       isGlobal: true,
     }),
 
-    // Use ConfigService to read database config from .env
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
-        host: configService.get<string>('DB_HOST'),
-        port: configService.get<number>('DB_PORT'),
-        username: configService.get<string>('DB_USERNAME'),
-        password: configService.get<string>('DB_PASSWORD'),
-        database: configService.get<string>('DB_NAME'),
+        host: configService.get<string>('DB_HOST') || 'localhost',
+        port: parseInt(configService.get<string>('DB_PORT') || '5432', 10),
+        username: configService.get<string>('DB_USERNAME') || 'postgres',
+        password: configService.get<string>('DB_PASSWORD') || 'password',
+        database: configService.get<string>('DB_NAME') || 'testdb',
         synchronize: false,
+        logging: true,
         entities: [Quote, User],
-        ssl: true,
-        extra: {
-          ssl: {
-            rejectUnauthorized: false,
-          },
-        },
+        ssl: { rejectUnauthorized: false },
       }),
     }),
 
-    // Application Modules
     QuoteModule,
     AuthModule,
     UsersModule,
