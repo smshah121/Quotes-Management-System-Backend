@@ -18,16 +18,8 @@ async function bootstrap() {
   // Validation
   app.useGlobalPipes(new ValidationPipe());
 
-  // ⚡ CORS middleware for Vercel
-  app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', 'https://quotes-frontend-tszy.vercel.app');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
-    if (req.method === 'OPTIONS') {
-      res.statusCode = 200;
-      return res.end();
-    }
-    next();
+  app.enableCors({
+    origin: '*',
   });
 
   const port = process.env.PORT ?? 3000;
