@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  ConflictException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
@@ -13,24 +17,23 @@ export class AuthService {
 
   // Validate login credentials
   async validateUser(email: string, password: string): Promise<any> {
-  const user = await this.usersService.findByEmail(email);
-  console.log("🔍 validateUser - email:", email);
-  console.log("🔍 validateUser - user from DB:", user);
+    const user = await this.usersService.findByEmail(email);
+    console.log('🔍 validateUser - email:', email);
+    console.log('🔍 validateUser - user from DB:', user);
 
-  if (!user) return null;
+    if (!user) return null;
 
-  const isPasswordValid = await bcrypt.compare(password, user.password);
-  console.log("🔍 validateUser - provided password:", password);
-  console.log("🔍 validateUser - hashed password in DB:", user.password);
-  console.log("🔍 validateUser - password match:", isPasswordValid);
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    console.log('🔍 validateUser - provided password:', password);
+    console.log('🔍 validateUser - hashed password in DB:', user.password);
+    console.log('🔍 validateUser - password match:', isPasswordValid);
 
-  if (isPasswordValid) {
-    const { password, ...result } = user;
-    return result;
+    if (isPasswordValid) {
+      const { password, ...result } = user;
+      return result;
+    }
+    return null;
   }
-  return null;
-}
-
 
   // Login and generate JWT
   async login(user: any): Promise<any> {
@@ -51,11 +54,9 @@ export class AuthService {
       throw new ConflictException('Email already in use');
     }
 
-    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
     const newUser = await this.usersService.create({
-      email,
-      password: hashedPassword,
-      name: createUserDto.name,
+      ...createUserDto,
+      email
     });
 
     const payload = { sub: newUser.id, email: newUser.email };
