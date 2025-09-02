@@ -13,23 +13,24 @@ export class AuthService {
 
   // Validate login credentials
   async validateUser(email: string, password: string): Promise<any> {
-    const normalizedEmail = email.toLowerCase().trim();
-    const user = await this.usersService.findByEmail(normalizedEmail);
-    
-    if (!user) {
-      console.log('User not found:', normalizedEmail);
-      return null;
-    }
+  const user = await this.usersService.findByEmail(email);
+  console.log("🔍 validateUser - email:", email);
+  console.log("🔍 validateUser - user from DB:", user);
 
-    const passwordMatch = await bcrypt.compare(password, user.password);
-    if (!passwordMatch) {
-      console.log('Password mismatch for:', normalizedEmail);
-      return null;
-    }
+  if (!user) return null;
 
-    const { password: _pass, ...result } = user;
+  const isPasswordValid = await bcrypt.compare(password, user.password);
+  console.log("🔍 validateUser - provided password:", password);
+  console.log("🔍 validateUser - hashed password in DB:", user.password);
+  console.log("🔍 validateUser - password match:", isPasswordValid);
+
+  if (isPasswordValid) {
+    const { password, ...result } = user;
     return result;
   }
+  return null;
+}
+
 
   // Login and generate JWT
   async login(user: any): Promise<any> {
