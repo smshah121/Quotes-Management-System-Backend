@@ -3,13 +3,11 @@ import { IsNotEmpty, IsString, IsNumber } from 'class-validator';
 export class CreateQuoteDto {
   @IsNotEmpty()
   @IsString()
-  quote: string;
+  quote!: string;
 
   @IsNotEmpty()
   @IsString()
-  author: string;
+  author!: string;
 
-  @IsNotEmpty()
-  @IsNumber()
-  userId: number;
+ 
 }
