@@ -17,7 +17,7 @@ export class QuotesController {
     return this.quotesService.create(createQuoteDto, userId);
   }
 
-  @Get(':userId')
+  @Get()
 async findAllByUserId(
   @Param('userId', ParseIntPipe) userIdParam: number,
   @Request() req: any,
