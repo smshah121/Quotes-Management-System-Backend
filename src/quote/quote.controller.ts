@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, NotFoundException, ParseIntPipe, Request, ForbiddenException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, NotFoundException, ParseIntPipe, Request, ForbiddenException, UnauthorizedException } from '@nestjs/common';
 
 import { CreateQuoteDto } from './dto/create-quote.dto';
 import { QuoteUpdateDto } from './dto/update-quote.dto';
@@ -17,18 +17,13 @@ export class QuotesController {
     return this.quotesService.create(createQuoteDto, userId);
   }
 
-  @Get()
-async findAllByUserId(
-  @Param('userId', ParseIntPipe) userIdParam: number,
-  @Request() req: any,
-): Promise<Quote[]> {
-  const userId = req.user.id;
-
-  if (userId !== userIdParam) {
-    throw new ForbiddenException('You are not allowed to access this data');
+ @Get()
+async findAllByUserId(@Request() req: any): Promise<Quote[]> {
+  if (!req.user?.id) {
+    throw new UnauthorizedException();
   }
 
-  return this.quotesService.findAll(userId);
+  return this.quotesService.findAll(req.user.id);
 }
 
   @Get(':id')
