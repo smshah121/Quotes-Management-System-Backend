@@ -4,6 +4,7 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { Response, Request } from 'express';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
@@ -14,6 +15,12 @@ export class AuthController {
   async login(@Req() req: any) {
     const result = await this.authService.login(req.user);
     return result;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get("profile")
+  async getProfile(@Req() req){
+    return this.authService.getProfile(req.user.sub)
   }
 
   @Get('google')
