@@ -1,62 +1,73 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import * as bcrypt from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
+import * as bcrypt from "bcrypt"
 
 @Injectable()
-export class UsersService {
+
+export class UserService {
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
-  ) {}
-
+    private readonly UserRepo: Repository<User>
+  ){
+  }
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const normalizedEmail = createUserDto.email.toLowerCase().trim();
-    const hashedPasword = await bcrypt.hash(createUserDto.password, 10);
-    const users = this.userRepository.create({
+
+
+    let hashedPassword: string | undefined = undefined;
+
+  if (createUserDto.password) {
+    hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+  }
+
+    const user = this.UserRepo.create({
       ...createUserDto,
-      email: normalizedEmail,
-      password: hashedPasword,
-    });
-    return this.userRepository.save(users);
+      email: createUserDto.email.toLowerCase(),
+      password: hashedPassword
+    })
+
+    return this.UserRepo.save(user)
   }
 
-  async findAll(): Promise<User[]> {
-    return this.userRepository.find();
+  findAll():Promise<User[]> {
+    return this.UserRepo.find()
   }
 
-  async findOne(id: number): Promise<User | null> {
-    return this.userRepository.findOneBy({ id });
+  findOne(id: number):Promise<User | null> {
+    return this.UserRepo.findOneBy({id})
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
-    const user = await this.userRepository.findOneBy({ id });
-    if (!user) return null;
-    if (updateUserDto.password) {
-      updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10);
-    } else {
-      delete updateUserDto.password;
+    const user = await this.UserRepo.findOneBy({id})
+    if(!user) return null;
+    if(updateUserDto.password){
+      updateUserDto.password = await bcrypt.hash(updateUserDto.password ,10)
     }
-
-    const updatedUser = await this.userRepository.merge(user, updateUserDto);
-    return this.userRepository.save(updatedUser);
-  }
-
-  async remove(id: number): Promise<User | null> {
-    const user = await this.userRepository.findOneBy({ id });
-
-    if (!user) return null;
     else {
-      await this.userRepository.remove(user);
-      return user;
+      delete updateUserDto.password
+    }
+    const update = await this.UserRepo.merge(user,updateUserDto)
+    return this.UserRepo.save(user)
+
+  }
+
+  async remove(id: number) {
+    const user = await this.UserRepo.findOneBy({id})
+    if(!user) return null;
+    else {
+      await this.UserRepo.remove(user)
+      return user
     }
   }
 
-  async findByEmail(email: string): Promise<User | null> {
-    const normalizedEmail = email.toLowerCase().trim();
-    return this.userRepository.findOne({ where: { email: normalizedEmail } });
+  async findByEmail(email : string){
+    return this.UserRepo.findOne({where: {email}})
+  }
+
+  async findById(id:number){
+    return this.UserRepo.findOne({where: {id}})
   }
 }
