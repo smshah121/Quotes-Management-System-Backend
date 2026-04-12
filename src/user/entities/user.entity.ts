@@ -6,20 +6,20 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 @Entity()
 export class User {
     @PrimaryGeneratedColumn()
-    id: number
+    id!: number
 
     @Column()
-    name: string
+    name!: string
 
     @Column({unique: true})
-    email: string
+    email!: string
 
-
+    @Column({ nullable: true })
     @Column()
-    password: string
+    password!: string
 
     @OneToMany(()=> Quote, quote => quote.user)
-    quotes: Quote[]
+    quotes!: Quote[]
 
 
 }
