@@ -34,7 +34,7 @@ export class AuthController {
 @UseGuards(AuthGuard('google'))
 async googleAuthRedirect(@Req() req, @Res() res: Response) {
   const tokenData = await this.authService.googleLogin(req.user);
-  res.redirect(`https://learning-management-system-app1.netlify.app/oauth-success?token=${tokenData.access_token}`);
+  res.redirect(`https://quotenest-quotes.netlify.app/oauth-success?token=${tokenData.access_token}`);
 }
 
   // Register
