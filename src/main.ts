@@ -20,7 +20,7 @@ async function bootstrap() {
 
   app.enableCors({
     origin: [
-      'https://peaceful-crisp-c5d1fb.netlify.app',
+      'https://quotenest-quotes.netlify.app',
       'http://localhost:3000',
     ], // frontend domains
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
